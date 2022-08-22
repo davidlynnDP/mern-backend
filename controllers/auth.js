@@ -1,9 +1,9 @@
-const { response } = require( 'express' );
-const bcrypt = require( 'bcryptjs' );
-const Usuario = require( '../models/Usuario' );
-const { generarJWT } = require('../helpers/jwt' );
+const { response } = require('express');
+const bcrypt = require('bcryptjs');
+const Usuario = require('../models/Usuario');
+const { generarJWT } = require('../helpers/jwt');
  
-const crearUsuario = async( req, res = response ) => {
+const crearUsuario = async(req, res = response ) => {
 
     const { email, password } = req.body;
 
@@ -11,7 +11,7 @@ const crearUsuario = async( req, res = response ) => {
         let usuario = await Usuario.findOne({ email });
 
         if ( usuario ) {
-            return res.status( 400 ).json({
+            return res.status(400).json({
                 ok: false,
                 msg: 'El usuario ya existe'
             });
@@ -29,16 +29,16 @@ const crearUsuario = async( req, res = response ) => {
         // Generar JWT
         const token = await generarJWT( usuario.id, usuario.name );
     
-        res.status( 201 ).json({
+        res.status(201).json({
             ok: true,
             uid: usuario.id,
             name: usuario.name,
             token
         })
         
-    } catch ( error ) {
-        console.log( error )
-        res.status( 500 ).json({
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
             ok: false,
             msg: 'Por favor hable con el administrador'
         });
@@ -46,7 +46,7 @@ const crearUsuario = async( req, res = response ) => {
 }
 
 
-const loginUsuario = async( req, res = response ) => {
+const loginUsuario = async(req, res = response ) => {
 
     const { email, password } = req.body;
 
@@ -55,7 +55,7 @@ const loginUsuario = async( req, res = response ) => {
         const usuario = await Usuario.findOne({ email });
 
         if ( !usuario ) {
-            return res.status( 400 ).json({
+            return res.status(400).json({
                 ok: false,
                 msg: 'El usuario no existe con ese email'
             });
@@ -65,7 +65,7 @@ const loginUsuario = async( req, res = response ) => {
         const validPassword = bcrypt.compareSync( password, usuario.password );
 
         if ( !validPassword ) {
-            return res.status( 400 ).json({
+            return res.status(400).json({
                 ok: false,
                 msg: 'Password incorrecto'
             });
@@ -82,9 +82,9 @@ const loginUsuario = async( req, res = response ) => {
         })
 
 
-    } catch ( error ) {
-        console.log( error );
-        res.status( 500 ).json({
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
             ok: false,
             msg: 'Por favor hable con el administrador'
         });
@@ -93,7 +93,7 @@ const loginUsuario = async( req, res = response ) => {
 }
 
 
-const revalidarToken = async( req, res = response ) => {
+const revalidarToken = async (req, res = response ) => {
 
     const { uid, name } = req;
 
@@ -102,6 +102,7 @@ const revalidarToken = async( req, res = response ) => {
 
     res.json({
         ok: true,
+        uid, name,
         token
     })
 }
